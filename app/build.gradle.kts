@@ -7,9 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.projectmagang"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36  // ✅ FIXED - Remove 'version = release()'
 
     defaultConfig {
         applicationId = "com.example.projectmagang"

@@ -3,6 +3,7 @@ package com.example.projectmagang.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-
+    private static final String TAG = "LoginActivity";
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private ProgressBar progressBar;
@@ -40,7 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is already logged in
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
-            navigateToMain();
+            // ✅ RE-FETCH role to ensure it's updated
+            Log.d(TAG, "User already logged in, re-fetching role...");
+            showProgress(true);
+            fetchUserRoleAndNavigate(currentUser.getUid());
             return;
         }
 
@@ -75,8 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Show progress
-        progressBar.setVisibility(View.VISIBLE);
-        btnLogin.setEnabled(false);
+        showProgress(true);
 
         // Sign in with Firebase
         auth.signInWithEmailAndPassword(email, password)
@@ -85,28 +88,45 @@ public class LoginActivity extends AppCompatActivity {
                         // Login success
                         FirebaseUser user = auth.getCurrentUser();
                         if (user != null) {
+                            Log.d(TAG, "Login successful for: " + user.getEmail());
+                            // ✅ Fetch role BEFORE navigating
                             // Fetch user role
-                            fetchUserRole(user.getUid());
+                            fetchUserRoleAndNavigate(user.getUid());
                         }
                     } else {
                         // Login failed
-                        progressBar.setVisibility(View.GONE);
-                        btnLogin.setEnabled(true);
-                        Toast.makeText(LoginActivity.this,
-                                "Login gagal: " + task.getException().getMessage(),
+                        showProgress(false);
+                        String errorMessage = task.getException() != null ?
+                                task.getException().getMessage() : "Login gagal";
+                        Toast.makeText(this, "Login gagal: " + errorMessage,
                                 Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "Login failed", task.getException());
                     }
                 });
     }
 
-    private void fetchUserRole(String uid) {
-        firebaseManager.getUserRole(uid, role -> {
-            // Save role
-            roleManager.setRole(role);
+    private void fetchUserRoleAndNavigate(String uid) {
+        Log.d(TAG, "Fetching role for UID: " + uid);
 
-            // Navigate to main
-            progressBar.setVisibility(View.GONE);
-            navigateToMain();
+        firebaseManager.getUserRole(uid, role -> {
+            // ✅ Save role to SharedPreferences
+            roleManager.setRole(role);
+            Log.d(TAG, "Role saved: " + role + " (isAdmin: " + roleManager.isAdmin() + ")");
+
+            // ✅ Small delay to ensure role is persisted
+            runOnUiThread(() -> {
+                showProgress(false);
+
+                // Show success message with role
+                String roleDisplay = roleManager.isAdmin() ? "Admin" : "User";
+                Toast.makeText(this, "Login berhasil sebagai " + roleDisplay,
+                        Toast.LENGTH_SHORT).show();
+
+                // Navigate after a short delay
+                new android.os.Handler().postDelayed(() -> {
+                    navigateToMain();
+                }, 300); // 300ms delay
+            });
         });
     }
 
@@ -115,5 +135,12 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void showProgress(boolean show) {
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        btnLogin.setEnabled(!show);
+        etEmail.setEnabled(!show);
+        etPassword.setEnabled(!show);
     }
 }
