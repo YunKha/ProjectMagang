@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "221203943968",
+    "project_id": "projectmagang-6b839",
+    "storage_bucket": "projectmagang-6b839.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221203943968:android:0a233f44e9909bd056e245",
+        "android_client_info": {
+          "package_name": "com.example.projectmagang"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXpEiyx54IpLfWxUUfd7WgwbtThn2XI6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#FF6200EE</color>
+    <color name="primary_dark">#FF3700B3</color>
+    <color name="accent">#FF03DAC5</color>
+
+    <!-- Status Colors -->
+    <color name="status_normal">#4CAF50</color>
+    <color name="status_gangguan">#F44336</color>
+    <color name="status_dikerjakan">#FF9800</color>
+
+    <!-- Background -->
+    <color name="background_gray">#F5F5F5</color>
+    <color name="gray">#757575</color>
+    <color name="light_gray">#BDBDBD</color>
+</resources>

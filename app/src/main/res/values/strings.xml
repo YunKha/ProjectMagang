@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ProjectMagang</string>
+    <string name="nav_maps">Peta</string>
+    <string name="nav_description">Deskripsi</string>
+    <string name="nav_user">Profil</string>
+
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="logout">Logout</string>
+
+    <string name="status_normal">Normal</string>
+    <string name="status_gangguan">Gangguan</string>
+    <string name="status_dikerjakan">Sedang Dikerjakan</string>
+</resources>
