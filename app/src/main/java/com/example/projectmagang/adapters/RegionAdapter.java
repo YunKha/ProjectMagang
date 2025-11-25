@@ -1,5 +1,6 @@
 package com.example.projectmagang.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
     private List<Region> regionList;
     private SimpleDateFormat dateFormat;
 
-    public RegionAdapter(List<Region> regionList) {
+    public RegionAdapter(Context context, List<Region> regionList) {
         this.regionList = regionList;
         this.dateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm", new Locale("id", "ID"));
     }

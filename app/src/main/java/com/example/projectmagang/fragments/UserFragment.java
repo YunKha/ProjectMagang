@@ -1,6 +1,8 @@
 package com.example.projectmagang.fragments;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.projectmagang.R;
@@ -21,7 +24,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class UserFragment extends Fragment {
 
-    private TextView tvName, tvEmail, tvRole;
+    private TextView tvName, tvEmail, tvRole, tvAppVersion;
+    private CardView cardAbout, cardDistricts, cardFeatures;
     private Button btnLogout;
 
     private FirebaseManager firebaseManager;
@@ -38,36 +42,164 @@ public class UserFragment extends Fragment {
         roleManager = RoleManager.getInstance(requireContext());
 
         // Initialize views
-        tvName = view.findViewById(R.id.tv_name);
-        tvEmail = view.findViewById(R.id.tv_email);
-        tvRole = view.findViewById(R.id.tv_role);
-        btnLogout = view.findViewById(R.id.btn_logout);
+        initViews(view);
 
         // Load user info
         loadUserInfo();
 
-        // Logout button
-        btnLogout.setOnClickListener(v -> showLogoutDialog());
+        // Set version
+        setAppVersion();
+
+        // Setup click listeners
+        setupClickListeners();
 
         return view;
+    }
+
+    private void initViews(View view) {
+        tvName = view.findViewById(R.id.tv_name);
+        tvEmail = view.findViewById(R.id.tv_email);
+        tvRole = view.findViewById(R.id.tv_role);
+        tvAppVersion = view.findViewById(R.id.tv_app_version);
+
+        cardAbout = view.findViewById(R.id.card_about);
+        cardDistricts = view.findViewById(R.id.card_districts);
+        cardFeatures = view.findViewById(R.id.card_features);
+
+        btnLogout = view.findViewById(R.id.btn_logout);
     }
 
     private void loadUserInfo() {
         FirebaseUser user = firebaseManager.getCurrentUser();
 
         if (user != null) {
+            // Set email
             String email = user.getEmail();
-            String name = user.getDisplayName();
-
             tvEmail.setText(email != null ? email : "No email");
-            tvName.setText(name != null ? name : email);
 
+            // Set name - get from display name or derive from email
+            String displayName = user.getDisplayName();
+            if (displayName != null && !displayName.isEmpty()) {
+                tvName.setText(displayName);
+            } else if (email != null) {
+                // Extract name from email (before @)
+                String nameFromEmail = email.split("@")[0];
+                // Capitalize first letter
+                nameFromEmail = nameFromEmail.substring(0, 1).toUpperCase() +
+                        nameFromEmail.substring(1);
+                tvName.setText(nameFromEmail);
+            } else {
+                tvName.setText("User");
+            }
+
+            // Set role with icon
             String role = roleManager.getRole();
             String roleDisplay = roleManager.isAdmin() ? "👑 Administrator" : "👤 User";
             tvRole.setText(roleDisplay);
         }
     }
 
+    private void setAppVersion() {
+        try {
+            PackageInfo pInfo = requireActivity().getPackageManager()
+                    .getPackageInfo(requireActivity().getPackageName(), 0);
+            String version = pInfo.versionName;
+            tvAppVersion.setText("Versi " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            tvAppVersion.setText("Versi 1.0");
+        }
+    }
+
+    private void setupClickListeners() {
+        // About Dialog
+        cardAbout.setOnClickListener(v -> showAboutDialog());
+
+        // Districts Dialog
+        cardDistricts.setOnClickListener(v -> showDistrictsDialog());
+
+        // Features Dialog
+        cardFeatures.setOnClickListener(v -> showFeaturesDialog());
+
+        // Logout
+        btnLogout.setOnClickListener(v -> showLogoutDialog());
+    }
+
+    // ========== ABOUT DIALOG ==========
+    private void showAboutDialog() {
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_about, null);
+
+        new AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setPositiveButton("Tutup", null)
+                .show();
+    }
+
+    // ========== DISTRICTS DIALOG ==========
+    private void showDistrictsDialog() {
+        String[] districts = {
+                "1. Palu Barat",
+                "2. Palu Selatan",
+                "3. Palu Timur",
+                "4. Palu Utara",
+                "5. Tatanga",
+                "6. Ulujadi",
+                "7. Mantikulore",
+                "8. Tawaeli"
+        };
+
+        StringBuilder message = new StringBuilder();
+        message.append("Aplikasi ini memantau status jaringan di 8 kecamatan Kota Palu:\n\n");
+        for (String district : districts) {
+            message.append("📍 ").append(district).append("\n");
+        }
+        message.append("\n✅ Status: Normal\n");
+        message.append("🟥 Status: Gangguan\n");
+        message.append("🟧 Status: Sedang Dikerjakan");
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("🗺️ Daftar Kecamatan")
+                .setMessage(message.toString())
+                .setPositiveButton("Tutup", null)
+                .show();
+    }
+
+    // ========== FEATURES DIALOG ==========
+    private void showFeaturesDialog() {
+        String features = "📱 Fitur Aplikasi:\n\n" +
+                "🗺️ PETA INTERAKTIF\n" +
+                "• Visualisasi status jaringan real-time\n" +
+                "• Peta berbasis Leaflet.js\n" +
+                "• Zoom dan navigasi peta\n\n" +
+
+                "📊 MONITORING STATUS\n" +
+                "• Status: Normal, Gangguan, Dikerjakan\n" +
+                "• Update otomatis dari database\n" +
+                "• Informasi detail per kecamatan\n\n" +
+
+                "✏️ EDIT STATUS (Admin)\n" +
+                "• Ubah status jaringan\n" +
+                "• Tambah informasi gangguan\n" +
+                "• Sinkronisasi real-time\n\n" +
+
+                "📋 DESKRIPSI LENGKAP\n" +
+                "• Daftar semua kecamatan\n" +
+                "• Detail informasi jaringan\n" +
+                "• Waktu update terakhir\n\n" +
+
+                "👤 MANAJEMEN PENGGUNA\n" +
+                "• Login dengan Email/Password\n" +
+                "• Role: Admin & User\n" +
+                "• Firebase Authentication";
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("⚡ Fitur-Fitur")
+                .setMessage(features)
+                .setPositiveButton("Tutup", null)
+                .show();
+    }
+
+    // ========== LOGOUT DIALOG ==========
     private void showLogoutDialog() {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Logout")

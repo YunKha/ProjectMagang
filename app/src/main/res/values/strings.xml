@@ -12,4 +12,22 @@
     <string name="status_normal">Normal</string>
     <string name="status_gangguan">Gangguan</string>
     <string name="status_dikerjakan">Sedang Dikerjakan</string>
+
+    <!-- User Profile -->
+    <string name="about_app">Tentang Aplikasi</string>
+    <string name="about_description">Aplikasi pemantauan status gangguan jaringan telekomunikasi di 8 kecamatan Kota Palu secara real-time.</string>
+
+    <string name="districts_list">Daftar Kecamatan</string>
+    <string name="features_list">Fitur-Fitur</string>
+
+    <string name="app_version">Versi %1$s</string>
+
+    <string name="district_1">Palu Barat</string>
+    <string name="district_2">Palu Selatan</string>
+    <string name="district_3">Palu Timur</string>
+    <string name="district_4">Palu Utara</string>
+    <string name="district_5">Tatanga</string>
+    <string name="district_6">Ulujadi</string>
+    <string name="district_7">Mantikulore</string>
+    <string name="district_8">Tawaeli</string>
 </resources>
