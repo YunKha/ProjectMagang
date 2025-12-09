@@ -1,18 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Telkom Brand Colors -->
+    <color name="telkom_red">#E1002A</color>         <!-- Primary Telkom -->
+    <color name="telkom_red_dark">#B00020</color>    <!-- Darkened Version -->
+    <color name="telkom_red_soft">#FF4A55</color>    <!-- Soft accent -->
+
+    <!-- Material Theme Colors -->
+    <color name="primary">@color/telkom_red</color>
+    <color name="primary_dark">@color/telkom_red_dark</color>
+    <color name="accent">@color/telkom_red_soft</color>
+
+    <!-- UI Base Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#FF6200EE</color>
-    <color name="primary_dark">#FF3700B3</color>
-    <color name="accent">#FF03DAC5</color>
 
-    <!-- Status Colors -->
-    <color name="status_normal">#4CAF50</color>
-    <color name="status_gangguan">#F44336</color>
-    <color name="status_dikerjakan">#FF9800</color>
-
-    <!-- Background -->
-    <color name="background_gray">#F5F5F5</color>
+    <!-- Background & Surface -->
+    <color name="background_gray">#F7F7F7</color>    <!-- Softer gray for modern UI -->
     <color name="gray">#757575</color>
     <color name="light_gray">#BDBDBD</color>
+
+    <!-- Status Colors -->
+    <color name="status_normal">#4CAF50</color>       <!-- Hijau = Aman -->
+    <color name="status_gangguan">@color/telkom_red</color>
+    <color name="status_dikerjakan">#FF9800</color>   <!-- Oranye = Dikerjakan -->
+
+    <color name="statusNormal">#2ECC71</color>
+    <color name="statusNormalDark">#1E9E59</color>
+    <color name="statusNormalLight">#E7F8EF</color>
+
+    <color name="statusGangguan">#E74C3C</color>
+    <color name="statusGangguanDark">#C0392B</color>
+    <color name="statusGangguanLight">#FDECEA</color>
+
+    <color name="statusDikerjakan">#F39C12</color>
+    <color name="statusDikerjakanDark">#D68910</color>
+    <color name="statusDikerjakanLight">#FFF4E0</color>
+
+    <color name="gray_dark">#4A4A4A</color>
+
 </resources>

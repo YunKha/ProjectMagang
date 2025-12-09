@@ -195,14 +195,4 @@ public class DescriptionFragment extends Fragment {
         firebaseManager.removeRegionsListener();
         Log.d(TAG, "Fragment destroyed, listener removed");
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "Fragment resumed");
-        // Reload data when fragment becomes visible
-        if (firebaseManager != null) {
-            loadRegionsData();
-        }
-    }
 }
