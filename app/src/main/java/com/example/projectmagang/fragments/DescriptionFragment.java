@@ -78,56 +78,96 @@ public class DescriptionFragment extends Fragment {
 
         // RecyclerView
         recyclerView = view.findViewById(R.id.recycler_view);
+
+        // ✅ FIX: Set default text untuk menunjukkan loading state
+        tvLastUpdate.setText("🔄 Memuat data...");
     }
 
     private void setupRecyclerView() {
-        adapter = new RegionAdapter(requireContext(), regionsList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        // ✅ FIX: Pastikan context tidak null
+        if (getContext() == null) {
+            Log.e(TAG, "❌ Context is null, cannot setup RecyclerView");
+            return;
+        }
+
+        adapter = new RegionAdapter(getContext(), regionsList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+
+        Log.d(TAG, "✅ RecyclerView setup completed");
     }
 
     private void loadRegionsData() {
-        Log.d(TAG, "Loading regions data...");
+        Log.d(TAG, "🔄 Loading regions data...");
+
+        // ✅ FIX: Cek apakah fragment masih attached
+        if (!isAdded()) {
+            Log.w(TAG, "⚠️ Fragment not attached, skipping data load");
+            return;
+        }
 
         // Add real-time listener
         firebaseManager.addRegionsListener(new FirebaseManager.OnRegionsLoadedListener() {
             @Override
             public void onRegionsLoaded(List<Region> regions) {
+                // ✅ FIX: Cek apakah fragment masih attached sebelum update UI
+                if (!isAdded() || getActivity() == null) {
+                    Log.w(TAG, "⚠️ Fragment not attached, skipping UI update");
+                    return;
+                }
+
                 Log.d(TAG, "========== REGIONS LOADED ==========");
                 Log.d(TAG, "Total regions: " + regions.size());
 
-                // ✅ Debug: Print all region names
+                // Debug: Print all region names
                 for (int i = 0; i < regions.size(); i++) {
                     Region r = regions.get(i);
                     Log.d(TAG, "Region " + i + ": " + r.getName() + " - " + r.getStatus());
                 }
                 Log.d(TAG, "====================================");
 
-                // Update list
-                regionsList.clear();
-                regionsList.addAll(regions);
+                // ✅ FIX: Update data di UI thread
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // Clear dan update list
+                            regionsList.clear();
+                            regionsList.addAll(regions);
 
-                // ✅ Notify adapter AFTER data is added
-                if (adapter != null) {
-                    adapter.notifyDataSetChanged();
-                    Log.d(TAG, "Adapter notified with " + regionsList.size() + " items");
-                }
+                            // Notify adapter
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                                Log.d(TAG, "✅ Adapter notified with " + regionsList.size() + " items");
+                            } else {
+                                Log.e(TAG, "❌ Adapter is null!");
+                            }
 
-                // Calculate and update statistics
-                updateStatistics(regions);
+                            // Update statistics
+                            updateStatistics(regions);
 
-                // Update last update time
-                updateLastUpdateTime();
+                            // Update last update time
+                            updateLastUpdateTime();
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "❌ Error updating UI", e);
+                            showErrorState("Error: " + e.getMessage());
+                        }
+                    }
+                });
             }
 
             @Override
             public void onError(String error) {
-                Log.e(TAG, "Error loading regions: " + error);
+                Log.e(TAG, "❌ Error loading regions: " + error);
 
-                // Show error state
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        tvLastUpdate.setText("⚠️ Error: " + error);
+                // ✅ FIX: Show error di UI thread
+                if (isAdded() && getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showErrorState(error);
+                        }
                     });
                 }
             }
@@ -135,18 +175,14 @@ public class DescriptionFragment extends Fragment {
     }
 
     /**
-     * Calculate and update statistics from regions list
+     * ✅ FIX: Update statistics dengan error handling
      */
     private void updateStatistics(List<Region> regions) {
-        if (getActivity() == null) {
-            return;
-        }
-
-        getActivity().runOnUiThread(() -> {
-            // Calculate statistics using helper class
+        try {
+            // Calculate statistics
             RegionStatistics stats = RegionStatistics.calculate(regions);
 
-            Log.d(TAG, "Statistics: " + stats.toString());
+            Log.d(TAG, "📊 Statistics: " + stats.toString());
 
             // Update Total Regions
             tvTotalRegions.setText(String.valueOf(stats.getTotalRegions()));
@@ -163,36 +199,72 @@ public class DescriptionFragment extends Fragment {
             tvDikerjakanCount.setText(String.valueOf(stats.getDikerjakanCount()));
             tvDikerjakanPercentage.setText(stats.getDikerjakanPercentage() + "%");
 
-            // Log status untuk debugging
+            // Log status
             if (stats.isAllNormal()) {
                 Log.d(TAG, "✅ All regions are normal!");
             } else if (stats.hasIssues()) {
                 Log.w(TAG, "⚠️ Some regions have issues");
             }
-        });
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error updating statistics", e);
+        }
     }
 
     /**
-     * Update last update timestamp
+     * ✅ FIX: Update timestamp dengan error handling
      */
     private void updateLastUpdateTime() {
-        if (getActivity() == null) {
-            return;
-        }
-
-        getActivity().runOnUiThread(() -> {
+        try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm",
                     new Locale("id", "ID"));
             String currentTime = sdf.format(new Date());
             tvLastUpdate.setText("🕐 Update terakhir: " + currentTime);
-        });
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error updating timestamp", e);
+            tvLastUpdate.setText("🕐 Update terakhir: -");
+        }
+    }
+
+    /**
+     * ✅ NEW: Tampilkan error state
+     */
+    private void showErrorState(String error) {
+        if (tvLastUpdate != null) {
+            tvLastUpdate.setText("⚠️ Error: " + error);
+        }
+
+        // Set default values
+        if (tvTotalRegions != null) tvTotalRegions.setText("0");
+        if (tvNormalCount != null) tvNormalCount.setText("0");
+        if (tvNormalPercentage != null) tvNormalPercentage.setText("0%");
+        if (tvGangguanCount != null) tvGangguanCount.setText("0");
+        if (tvGangguanPercentage != null) tvGangguanPercentage.setText("0%");
+        if (tvDikerjakanCount != null) tvDikerjakanCount.setText("0");
+        if (tvDikerjakanPercentage != null) tvDikerjakanPercentage.setText("0%");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Remove Firebase listener when fragment is destroyed
+        // Remove Firebase listener
         firebaseManager.removeRegionsListener();
-        Log.d(TAG, "Fragment destroyed, listener removed");
+        Log.d(TAG, "🗑️ Fragment destroyed, listener removed");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "▶️ Fragment resumed");
+        // Reload data when fragment becomes visible
+        if (regionsList.isEmpty()) {
+            loadRegionsData();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "⏸️ Fragment paused");
     }
 }
