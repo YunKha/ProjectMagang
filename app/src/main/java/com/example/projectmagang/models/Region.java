@@ -24,8 +24,17 @@ public class Region {
     // Getters
     public String getId() { return id; }
     public String getName() { return name; }
-    public String getStatus() { return status; }
-    public String getInfo() { return info; }
+
+    public String getStatus() {
+        // ✅ FIX: Return default value if null
+        return status != null ? status : "normal";
+    }
+
+    public String getInfo() {
+        // ✅ FIX: Return default value if null
+        return info != null ? info : "Tidak ada informasi";
+    }
+
     public Timestamp getLastUpdate() { return lastUpdate; }
 
     // Setters
@@ -35,8 +44,12 @@ public class Region {
     public void setInfo(String info) { this.info = info; }
     public void setLastUpdate(Timestamp lastUpdate) { this.lastUpdate = lastUpdate; }
 
-    // Get color based on status
+    // ✅ FIX: Get color based on status with null check
     public int getColorResId() {
+        if (status == null) {
+            return android.R.color.darker_gray;
+        }
+
         switch (status.toLowerCase()) {
             case "normal":
                 return android.R.color.holo_green_light;
@@ -49,9 +62,13 @@ public class Region {
         }
     }
 
-    // Get status display text
+    // ✅ FIX: Get status display text with null check
     public String getStatusDisplay() {
-        switch (status.toLowerCase()) {
+        if (status == null || status.trim().isEmpty()) {
+            return "⚪ Status Tidak Diketahui";
+        }
+
+        switch (status.toLowerCase().trim()) {
             case "normal":
                 return "🟩 Normal";
             case "gangguan":
@@ -59,7 +76,7 @@ public class Region {
             case "dikerjakan":
                 return "🟧 Sedang Dikerjakan";
             default:
-                return status;
+                return "⚪ " + status;
         }
     }
 }

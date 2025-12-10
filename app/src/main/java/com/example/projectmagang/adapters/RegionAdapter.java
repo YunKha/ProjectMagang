@@ -1,6 +1,7 @@
 package com.example.projectmagang.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder> {
+    private static final String TAG = "RegionAdapter";
 
     private List<Region> regionList;
     private SimpleDateFormat dateFormat;
@@ -38,28 +40,56 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Region region = regionList.get(position);
+        try {
+            Region region = regionList.get(position);
 
-        holder.tvRegionName.setText(region.getName());
-        holder.tvStatus.setText(region.getStatusDisplay());
-        holder.tvInfo.setText(region.getInfo());
+            // ✅ Null check for region
+            if (region == null) {
+                Log.e(TAG, "❌ Region at position " + position + " is null!");
+                return;
+            }
 
-        // Format timestamp
-        if (region.getLastUpdate() != null) {
-            String formattedDate = dateFormat.format(region.getLastUpdate().toDate());
-            holder.tvLastUpdate.setText("Terakhir diperbarui: " + formattedDate);
-        } else {
-            holder.tvLastUpdate.setText("Terakhir diperbarui: -");
+            // Set region name
+            String name = region.getName();
+            holder.tvRegionName.setText(name != null ? name : "Unknown Region");
+
+            // Set status with null check
+            String statusDisplay = region.getStatusDisplay();
+            holder.tvStatus.setText(statusDisplay);
+
+            // Set info
+            String info = region.getInfo();
+            holder.tvInfo.setText(info != null && !info.isEmpty() ? info : "Tidak ada informasi");
+
+            // Format timestamp
+            if (region.getLastUpdate() != null) {
+                try {
+                    String formattedDate = dateFormat.format(region.getLastUpdate().toDate());
+                    holder.tvLastUpdate.setText("Terakhir diperbarui: " + formattedDate);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error formatting date", e);
+                    holder.tvLastUpdate.setText("Terakhir diperbarui: -");
+                }
+            } else {
+                holder.tvLastUpdate.setText("Terakhir diperbarui: -");
+            }
+
+            // Set status color with null check
+            try {
+                int color = ContextCompat.getColor(holder.itemView.getContext(), region.getColorResId());
+                holder.tvStatus.setTextColor(color);
+            } catch (Exception e) {
+                Log.e(TAG, "Error setting color", e);
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error binding view at position " + position, e);
         }
-
-        // Set status color
-        int color = ContextCompat.getColor(holder.itemView.getContext(), region.getColorResId());
-        holder.tvStatus.setTextColor(color);
     }
 
     @Override
     public int getItemCount() {
-        return regionList.size();
+        return regionList != null ? regionList.size() : 0;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

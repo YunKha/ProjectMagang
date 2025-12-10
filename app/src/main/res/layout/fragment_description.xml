@@ -55,7 +55,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Kecamatan"
+                        android:text="Total Kelurahan"
                         android:textSize="14sp"
                         android:textColor="@color/white"
                         android:alpha="0.9" />
@@ -64,7 +64,7 @@
                         android:id="@+id/tv_total_regions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="8"
+                        android:text="0"
                         android:textSize="36sp"
                         android:textColor="@color/white"
                         android:textStyle="bold"
@@ -84,14 +84,17 @@
 
         <!-- STATUS NORMAL -->
         <include
+            android:id="@+id/include_status_normal"
             layout="@layout/item_status_normal" />
 
         <!-- STATUS GANGGUAN -->
         <include
+            android:id="@+id/include_status_gangguan"
             layout="@layout/item_status_gangguan" />
 
         <!-- STATUS DIKERJAKAN -->
         <include
+            android:id="@+id/include_status_dikerjakan"
             layout="@layout/item_status_dikerjakan" />
 
         <!-- LAST UPDATE CARD -->
@@ -132,7 +135,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Daftar Kecamatan"
+            android:text="Daftar Kelurahan"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -143,8 +146,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/tv_title"
             android:padding="8dp"
-            android:clipToPadding="false"  />
+            android:clipToPadding="false" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

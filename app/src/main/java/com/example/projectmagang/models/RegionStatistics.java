@@ -2,9 +2,6 @@ package com.example.projectmagang.models;
 
 import java.util.List;
 
-/**
- * Model class untuk menghitung statistik region
- */
 public class RegionStatistics {
     private int totalRegions;
     private int normalCount;
@@ -18,9 +15,6 @@ public class RegionStatistics {
         this.dikerjakanCount = 0;
     }
 
-    /**
-     * Calculate statistics from list of regions
-     */
     public static RegionStatistics calculate(List<Region> regions) {
         RegionStatistics stats = new RegionStatistics();
 
@@ -31,12 +25,19 @@ public class RegionStatistics {
         stats.totalRegions = regions.size();
 
         for (Region region : regions) {
-            String status = region.getStatus();
-            if (status == null) {
+            // ✅ Skip null regions
+            if (region == null) {
                 continue;
             }
 
-            switch (status.toLowerCase()) {
+            String status = region.getStatus();
+
+            // ✅ Handle null status
+            if (status == null || status.trim().isEmpty()) {
+                continue;
+            }
+
+            switch (status.toLowerCase().trim()) {
                 case "normal":
                     stats.normalCount++;
                     break;
@@ -69,7 +70,7 @@ public class RegionStatistics {
         return dikerjakanCount;
     }
 
-    // Get percentage
+    // Get percentage with division by zero check
     public int getNormalPercentage() {
         return totalRegions > 0 ? (normalCount * 100) / totalRegions : 0;
     }
@@ -82,12 +83,10 @@ public class RegionStatistics {
         return totalRegions > 0 ? (dikerjakanCount * 100) / totalRegions : 0;
     }
 
-    // Check if all regions are normal
     public boolean isAllNormal() {
         return totalRegions > 0 && normalCount == totalRegions;
     }
 
-    // Check if there are issues
     public boolean hasIssues() {
         return gangguanCount > 0 || dikerjakanCount > 0;
     }

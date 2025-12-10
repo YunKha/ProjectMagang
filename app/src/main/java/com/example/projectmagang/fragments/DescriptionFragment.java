@@ -49,6 +49,8 @@ public class DescriptionFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_description, container, false);
 
+        Log.d(TAG, "🎬 onCreateView started");
+
         // Initialize views
         initViews(view);
 
@@ -66,41 +68,111 @@ public class DescriptionFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        // Statistics TextViews
-        tvTotalRegions = view.findViewById(R.id.tv_total_regions);
-        tvNormalCount = view.findViewById(R.id.tv_normal_count);
-        tvNormalPercentage = view.findViewById(R.id.tv_normal_percentage);
-        tvGangguanCount = view.findViewById(R.id.tv_gangguan_count);
-        tvGangguanPercentage = view.findViewById(R.id.tv_gangguan_percentage);
-        tvDikerjakanCount = view.findViewById(R.id.tv_dikerjakan_count);
-        tvDikerjakanPercentage = view.findViewById(R.id.tv_dikerjakan_percentage);
-        tvLastUpdate = view.findViewById(R.id.tv_last_update);
+        Log.d(TAG, "🔧 Initializing views...");
 
-        // RecyclerView
-        recyclerView = view.findViewById(R.id.recycler_view);
+        try {
+            // Total Regions
+            tvTotalRegions = view.findViewById(R.id.tv_total_regions);
 
-        // ✅ FIX: Set default text untuk menunjukkan loading state
-        tvLastUpdate.setText("🔄 Memuat data...");
+            // Normal Status - dari included layout
+            View normalView = view.findViewById(R.id.include_status_normal);
+            if (normalView != null) {
+                tvNormalCount = normalView.findViewById(R.id.tv_normal_count);
+                tvNormalPercentage = normalView.findViewById(R.id.tv_normal_percentage);
+                Log.d(TAG, "✅ Normal views found");
+            } else {
+                Log.e(TAG, "❌ Normal view is null!");
+            }
+
+            // Gangguan Status - dari included layout
+            View gangguanView = view.findViewById(R.id.include_status_gangguan);
+            if (gangguanView != null) {
+                tvGangguanCount = gangguanView.findViewById(R.id.tv_gangguan_count);
+                tvGangguanPercentage = gangguanView.findViewById(R.id.tv_gangguan_percentage);
+                Log.d(TAG, "✅ Gangguan views found");
+            } else {
+                Log.e(TAG, "❌ Gangguan view is null!");
+            }
+
+            // Dikerjakan Status - dari included layout
+            View dikerjakanView = view.findViewById(R.id.include_status_dikerjakan);
+            if (dikerjakanView != null) {
+                tvDikerjakanCount = dikerjakanView.findViewById(R.id.tv_dikerjakan_count);
+                tvDikerjakanPercentage = dikerjakanView.findViewById(R.id.tv_dikerjakan_percentage);
+                Log.d(TAG, "✅ Dikerjakan views found");
+            } else {
+                Log.e(TAG, "❌ Dikerjakan view is null!");
+            }
+
+            tvLastUpdate = view.findViewById(R.id.tv_last_update);
+
+            // RecyclerView
+            recyclerView = view.findViewById(R.id.recycler_view);
+
+            // Validate all views
+            if (tvTotalRegions == null) Log.e(TAG, "❌ tvTotalRegions is null!");
+            if (tvNormalCount == null) Log.e(TAG, "❌ tvNormalCount is null!");
+            if (tvNormalPercentage == null) Log.e(TAG, "❌ tvNormalPercentage is null!");
+            if (tvGangguanCount == null) Log.e(TAG, "❌ tvGangguanCount is null!");
+            if (tvGangguanPercentage == null) Log.e(TAG, "❌ tvGangguanPercentage is null!");
+            if (tvDikerjakanCount == null) Log.e(TAG, "❌ tvDikerjakanCount is null!");
+            if (tvDikerjakanPercentage == null) Log.e(TAG, "❌ tvDikerjakanPercentage is null!");
+            if (tvLastUpdate == null) Log.e(TAG, "❌ tvLastUpdate is null!");
+            if (recyclerView == null) Log.e(TAG, "❌ recyclerView is null!");
+
+            // Set default text
+            if (tvLastUpdate != null) {
+                tvLastUpdate.setText("🔄 Memuat data...");
+            }
+
+            // Set default values
+            setDefaultValues();
+
+            Log.d(TAG, "✅ All views initialized");
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error initializing views", e);
+        }
+    }
+
+    private void setDefaultValues() {
+        try {
+            if (tvTotalRegions != null) tvTotalRegions.setText("0");
+            if (tvNormalCount != null) tvNormalCount.setText("0");
+            if (tvNormalPercentage != null) tvNormalPercentage.setText("0%");
+            if (tvGangguanCount != null) tvGangguanCount.setText("0");
+            if (tvGangguanPercentage != null) tvGangguanPercentage.setText("0%");
+            if (tvDikerjakanCount != null) tvDikerjakanCount.setText("0");
+            if (tvDikerjakanPercentage != null) tvDikerjakanPercentage.setText("0%");
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error setting default values", e);
+        }
     }
 
     private void setupRecyclerView() {
-        // ✅ FIX: Pastikan context tidak null
-        if (getContext() == null) {
-            Log.e(TAG, "❌ Context is null, cannot setup RecyclerView");
+        if (getContext() == null || !isAdded()) {
+            Log.e(TAG, "❌ Context is null or fragment not attached");
             return;
         }
 
-        adapter = new RegionAdapter(getContext(), regionsList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+        if (recyclerView == null) {
+            Log.e(TAG, "❌ RecyclerView is null!");
+            return;
+        }
 
-        Log.d(TAG, "✅ RecyclerView setup completed");
+        try {
+            adapter = new RegionAdapter(getContext(), regionsList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(adapter);
+            Log.d(TAG, "✅ RecyclerView setup completed");
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error setting up RecyclerView", e);
+        }
     }
 
     private void loadRegionsData() {
         Log.d(TAG, "🔄 Loading regions data...");
 
-        // ✅ FIX: Cek apakah fragment masih attached
         if (!isAdded()) {
             Log.w(TAG, "⚠️ Fragment not attached, skipping data load");
             return;
@@ -110,7 +182,6 @@ public class DescriptionFragment extends Fragment {
         firebaseManager.addRegionsListener(new FirebaseManager.OnRegionsLoadedListener() {
             @Override
             public void onRegionsLoaded(List<Region> regions) {
-                // ✅ FIX: Cek apakah fragment masih attached sebelum update UI
                 if (!isAdded() || getActivity() == null) {
                     Log.w(TAG, "⚠️ Fragment not attached, skipping UI update");
                     return;
@@ -126,12 +197,11 @@ public class DescriptionFragment extends Fragment {
                 }
                 Log.d(TAG, "====================================");
 
-                // ✅ FIX: Update data di UI thread
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            // Clear dan update list
+                            // Clear and update list
                             regionsList.clear();
                             regionsList.addAll(regions);
 
@@ -161,7 +231,6 @@ public class DescriptionFragment extends Fragment {
             public void onError(String error) {
                 Log.e(TAG, "❌ Error loading regions: " + error);
 
-                // ✅ FIX: Show error di UI thread
                 if (isAdded() && getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -174,9 +243,6 @@ public class DescriptionFragment extends Fragment {
         });
     }
 
-    /**
-     * ✅ FIX: Update statistics dengan error handling
-     */
     private void updateStatistics(List<Region> regions) {
         try {
             // Calculate statistics
@@ -185,19 +251,33 @@ public class DescriptionFragment extends Fragment {
             Log.d(TAG, "📊 Statistics: " + stats.toString());
 
             // Update Total Regions
-            tvTotalRegions.setText(String.valueOf(stats.getTotalRegions()));
+            if (tvTotalRegions != null) {
+                tvTotalRegions.setText(String.valueOf(stats.getTotalRegions()));
+            }
 
             // Update Normal Status
-            tvNormalCount.setText(String.valueOf(stats.getNormalCount()));
-            tvNormalPercentage.setText(stats.getNormalPercentage() + "%");
+            if (tvNormalCount != null) {
+                tvNormalCount.setText(String.valueOf(stats.getNormalCount()));
+            }
+            if (tvNormalPercentage != null) {
+                tvNormalPercentage.setText(stats.getNormalPercentage() + "%");
+            }
 
             // Update Gangguan Status
-            tvGangguanCount.setText(String.valueOf(stats.getGangguanCount()));
-            tvGangguanPercentage.setText(stats.getGangguanPercentage() + "%");
+            if (tvGangguanCount != null) {
+                tvGangguanCount.setText(String.valueOf(stats.getGangguanCount()));
+            }
+            if (tvGangguanPercentage != null) {
+                tvGangguanPercentage.setText(stats.getGangguanPercentage() + "%");
+            }
 
             // Update Dikerjakan Status
-            tvDikerjakanCount.setText(String.valueOf(stats.getDikerjakanCount()));
-            tvDikerjakanPercentage.setText(stats.getDikerjakanPercentage() + "%");
+            if (tvDikerjakanCount != null) {
+                tvDikerjakanCount.setText(String.valueOf(stats.getDikerjakanCount()));
+            }
+            if (tvDikerjakanPercentage != null) {
+                tvDikerjakanPercentage.setText(stats.getDikerjakanPercentage() + "%");
+            }
 
             // Log status
             if (stats.isAllNormal()) {
@@ -211,44 +291,39 @@ public class DescriptionFragment extends Fragment {
         }
     }
 
-    /**
-     * ✅ FIX: Update timestamp dengan error handling
-     */
     private void updateLastUpdateTime() {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm",
                     new Locale("id", "ID"));
             String currentTime = sdf.format(new Date());
-            tvLastUpdate.setText("🕐 Update terakhir: " + currentTime);
+
+            if (tvLastUpdate != null) {
+                tvLastUpdate.setText("🕐 Update terakhir: " + currentTime);
+            }
         } catch (Exception e) {
             Log.e(TAG, "❌ Error updating timestamp", e);
-            tvLastUpdate.setText("🕐 Update terakhir: -");
+            if (tvLastUpdate != null) {
+                tvLastUpdate.setText("🕐 Update terakhir: -");
+            }
         }
     }
 
-    /**
-     * ✅ NEW: Tampilkan error state
-     */
     private void showErrorState(String error) {
         if (tvLastUpdate != null) {
             tvLastUpdate.setText("⚠️ Error: " + error);
         }
 
         // Set default values
-        if (tvTotalRegions != null) tvTotalRegions.setText("0");
-        if (tvNormalCount != null) tvNormalCount.setText("0");
-        if (tvNormalPercentage != null) tvNormalPercentage.setText("0%");
-        if (tvGangguanCount != null) tvGangguanCount.setText("0");
-        if (tvGangguanPercentage != null) tvGangguanPercentage.setText("0%");
-        if (tvDikerjakanCount != null) tvDikerjakanCount.setText("0");
-        if (tvDikerjakanPercentage != null) tvDikerjakanPercentage.setText("0%");
+        setDefaultValues();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         // Remove Firebase listener
-        firebaseManager.removeRegionsListener();
+        if (firebaseManager != null) {
+            firebaseManager.removeRegionsListener();
+        }
         Log.d(TAG, "🗑️ Fragment destroyed, listener removed");
     }
 
@@ -256,10 +331,6 @@ public class DescriptionFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "▶️ Fragment resumed");
-        // Reload data when fragment becomes visible
-        if (regionsList.isEmpty()) {
-            loadRegionsData();
-        }
     }
 
     @Override
