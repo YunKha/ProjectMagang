@@ -33,9 +33,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kota Palu"
+            android:text="Tingkat Kelurahan - Kota Palu"
             android:textSize="16sp"
             android:textColor="@color/gray"
+            android:textAlignment="center"
             android:layout_marginBottom="24dp" />
 
         <!-- Divider -->
@@ -58,7 +59,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Aplikasi pemantauan status gangguan jaringan telekomunikasi di 8 kecamatan Kota Palu secara real-time. Dirancang untuk memudahkan monitoring status jaringan dengan visualisasi peta interaktif."
+            android:text="Aplikasi pemantauan status gangguan jaringan telekomunikasi di 46 kelurahan Kota Palu secara real-time. Dirancang untuk memudahkan monitoring status jaringan dengan visualisasi peta interaktif tingkat kelurahan yang lebih detail dan akurat."
             android:textSize="14sp"
             android:textColor="@color/gray"
             android:lineSpacingExtra="4dp"
@@ -77,7 +78,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="• Palu Barat\n• Palu Selatan\n• Palu Timur\n• Palu Utara\n• Tatanga\n• Ulujadi\n• Mantikulore\n• Tawaeli"
+            android:text="46 Kelurahan di 8 Kecamatan:\n\n• Palu Barat (7 kelurahan)\n• Palu Selatan (6 kelurahan)\n• Palu Timur (5 kelurahan)\n• Palu Utara (5 kelurahan)\n• Tatanga (5 kelurahan)\n• Ulujadi (5 kelurahan)\n• Mantikulore (4 kelurahan)\n• Tawaeli (8 kelurahan)"
             android:textSize="14sp"
             android:textColor="@color/gray"
             android:lineSpacingExtra="4dp"
@@ -96,7 +97,26 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="• Platform: Android\n• Backend: Firebase Firestore\n• Authentication: Firebase Auth\n• Map: Leaflet.js + OpenStreetMap\n• Real-time Sync"
+            android:text="• Platform: Android (API 24+)\n• Backend: Firebase Firestore\n• Authentication: Firebase Auth\n• Map Engine: Leaflet.js + OpenStreetMap\n• Data Format: GeoJSON Polygon\n• Real-time Sync: Cloud Firestore\n• UI Framework: Material Design 3"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Features -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✨ Fitur Utama"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Peta interaktif 46 kelurahan\n• Monitoring real-time 3 status\n• Role-based access (Admin/User)\n• Edit status jaringan (Admin only)\n• Statistik lengkap per kelurahan\n• Sinkronisasi otomatis\n• Notifikasi perubahan status"
             android:textSize="14sp"
             android:textColor="@color/gray"
             android:lineSpacingExtra="4dp"
@@ -132,7 +152,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="© 2025 All Rights Reserved"
+            android:text="© 2025 Telkomsel Palu\nAll Rights Reserved"
             android:textSize="12sp"
             android:textColor="@color/light_gray"
             android:textAlignment="center" />

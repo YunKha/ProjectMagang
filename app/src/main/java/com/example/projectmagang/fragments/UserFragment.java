@@ -135,30 +135,86 @@ public class UserFragment extends Fragment {
                 .show();
     }
 
-    // ========== DISTRICTS DIALOG ==========
+    // ========== DISTRICTS DIALOG (KELURAHAN) ==========
     private void showDistrictsDialog() {
+        // Data kelurahan dikelompokkan per kecamatan
         String[] districts = {
-                "1. Palu Barat",
-                "2. Palu Selatan",
-                "3. Palu Timur",
-                "4. Palu Utara",
-                "5. Tatanga",
-                "6. Ulujadi",
-                "7. Mantikulore",
-                "8. Tawaeli"
+                "PALU BARAT (7 kelurahan):",
+                "  • Kawatuna",
+                "  • Lasoani",
+                "  • Layana Indah",
+                "  • Poboya",
+                "  • Talise",
+                "  • Tanamodindi",
+                "  • Tondo",
+                "",
+                "PALU SELATAN (6 kelurahan):",
+                "  • Balaroa",
+                "  • Baru",
+                "  • Kamonji",
+                "  • Lere",
+                "  • Siranindi",
+                "  • Ujuna",
+                "",
+                "PALU TIMUR (5 kelurahan):",
+                "  • Birobuli Selatan",
+                "  • Birobuli Utara",
+                "  • Petobo",
+                "  • Tatura Selatan",
+                "  • Tatura Utara",
+                "",
+                "PALU UTARA (5 kelurahan):",
+                "  • Besusu Barat",
+                "  • Besusu Tengah",
+                "  • Besusu Timur",
+                "  • Lolu Selatan",
+                "  • Lolu Utara",
+                "",
+                "TATANGA (5 kelurahan):",
+                "  • Lambara",
+                "  • Kayumalue Pajeko",
+                "  • Mamboro",
+                "  • Mamboro Barat",
+                "  • Taipa",
+                "",
+                "ULUJADI (5 kelurahan):",
+                "  • Bayaoge",
+                "  • Duyu",
+                "  • Nunu",
+                "  • Palupi",
+                "  • Pengawu",
+                "",
+                "MANTIKULORE (4 kelurahan):",
+                "  • Tawanjuka",
+                "  • Baiya",
+                "  • Lambara",
+                "  • Panau",
+                "",
+                "TAWAELI (8 kelurahan):",
+                "  • Pantoloan",
+                "  • Pantoloan Boya",
+                "  • Buluri",
+                "  • Donggala Kodi",
+                "  • Kabonena",
+                "  • Silae",
+                "  • Tipo",
+                "  • Watusampu"
         };
 
         StringBuilder message = new StringBuilder();
-        message.append("Aplikasi ini memantau status jaringan di 8 kecamatan Kota Palu:\n\n");
+        message.append("Aplikasi ini memantau status jaringan di 46 kelurahan Kota Palu:\n\n");
+
         for (String district : districts) {
-            message.append("📍 ").append(district).append("\n");
+            message.append(district).append("\n");
         }
-        message.append("\n✅ Status: Normal\n");
-        message.append("🟥 Status: Gangguan\n");
-        message.append("🟧 Status: Sedang Dikerjakan");
+
+        message.append("\n\n📊 LEGEND STATUS:\n");
+        message.append("🟩 Normal - Jaringan beroperasi normal\n");
+        message.append("🟥 Gangguan - Terdapat gangguan jaringan\n");
+        message.append("🟧 Dikerjakan - Sedang dalam perbaikan");
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("🗺️ Daftar Kecamatan")
+                .setTitle("🗺️ Daftar Kelurahan")
                 .setMessage(message.toString())
                 .setPositiveButton("Tutup", null)
                 .show();
@@ -170,12 +226,14 @@ public class UserFragment extends Fragment {
                 "🗺️ PETA INTERAKTIF\n" +
                 "• Visualisasi status jaringan real-time\n" +
                 "• Peta berbasis Leaflet.js\n" +
-                "• Zoom dan navigasi peta\n\n" +
+                "• Zoom dan navigasi peta\n" +
+                "• 46 kelurahan Kota Palu\n\n" +
 
                 "📊 MONITORING STATUS\n" +
                 "• Status: Normal, Gangguan, Dikerjakan\n" +
                 "• Update otomatis dari database\n" +
-                "• Informasi detail per kecamatan\n\n" +
+                "• Informasi detail per kelurahan\n" +
+                "• Statistik real-time\n\n" +
 
                 "✏️ EDIT STATUS (Admin)\n" +
                 "• Ubah status jaringan\n" +
@@ -183,14 +241,20 @@ public class UserFragment extends Fragment {
                 "• Sinkronisasi real-time\n\n" +
 
                 "📋 DESKRIPSI LENGKAP\n" +
-                "• Daftar semua kecamatan\n" +
+                "• Daftar semua kelurahan\n" +
                 "• Detail informasi jaringan\n" +
-                "• Waktu update terakhir\n\n" +
+                "• Waktu update terakhir\n" +
+                "• Pengelompokan per kecamatan\n\n" +
 
                 "👤 MANAJEMEN PENGGUNA\n" +
                 "• Login dengan Email/Password\n" +
                 "• Role: Admin & User\n" +
-                "• Firebase Authentication";
+                "• Firebase Authentication\n\n" +
+
+                "🔔 NOTIFIKASI\n" +
+                "• Update status real-time\n" +
+                "• Monitoring gangguan\n" +
+                "• Riwayat perubahan";
 
         new AlertDialog.Builder(requireContext())
                 .setTitle("⚡ Fitur-Fitur")

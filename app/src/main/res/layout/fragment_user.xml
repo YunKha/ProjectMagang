@@ -188,7 +188,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Daftar Kecamatan"
+                        android:text="Daftar Kelurahan"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/black" />
@@ -196,7 +196,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="8 kecamatan Kota Palu"
+                        android:text="46 kelurahan Kota Palu"
                         android:textSize="13sp"
                         android:textColor="@color/gray"
                         android:layout_marginTop="2dp" />
@@ -349,7 +349,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"
-            android:text="© 2025 Pemetaan Gangguan Jaringan\nKota Palu"
+            android:text="© 2025 Pemetaan Gangguan Jaringan\nKota Palu - Tingkat Kelurahan"
             android:textAlignment="center"
             android:textSize="12sp"
             android:textColor="@color/light_gray" />
